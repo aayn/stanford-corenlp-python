@@ -157,7 +157,7 @@ class StanfordCoreNLP(object):
                 sys.exit(1)
 
         # spawn the server
-        start_corenlp = "%s -Xmx1800m -cp %s %s %s" % (java_path, ':'.join(jars), classname, props)
+        start_corenlp = "%s -Xmx10g -cp %s %s %s" % (java_path, ':'.join(jars), classname, props)
         if VERBOSE:
             logger.debug(start_corenlp)
         self.corenlp = pexpect.spawn(start_corenlp)
@@ -165,15 +165,15 @@ class StanfordCoreNLP(object):
         # show progress bar while loading the models
         widgets = ['Loading Models: ', Fraction()]
         pbar = ProgressBar(widgets=widgets, maxval=5, force_update=True).start()
-        self.corenlp.expect("done.", timeout=20) # Load pos tagger model (~5sec)
+        self.corenlp.expect("done.", timeout=2000) # Load pos tagger model (~5sec)
         pbar.update(1)
-        self.corenlp.expect("done.", timeout=200) # Load NER-all classifier (~33sec)
+        self.corenlp.expect("done.", timeout=20000) # Load NER-all classifier (~33sec)
         pbar.update(2)
-        self.corenlp.expect("done.", timeout=600) # Load NER-muc classifier (~60sec)
+        self.corenlp.expect("done.", timeout=60000) # Load NER-muc classifier (~60sec)
         pbar.update(3)
-        self.corenlp.expect("done.", timeout=600) # Load CoNLL classifier (~50sec)
+        self.corenlp.expect("done.", timeout=60000) # Load CoNLL classifier (~50sec)
         pbar.update(4)
-        self.corenlp.expect("done.", timeout=200) # Loading PCFG (~3sec)
+        self.corenlp.expect("done.", timeout=20000) # Loading PCFG (~3sec)
         pbar.update(5)
         self.corenlp.expect("Entering interactive shell.")
         pbar.finish()
